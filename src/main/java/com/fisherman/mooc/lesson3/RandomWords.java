@@ -1,6 +1,6 @@
 /**
  * Copyright © 2014, Oracle and/or its affiliates. All rights reserved.
- * 
+ * <p>
  * JDK 8 MOOC Lesson 3 homework
  */
 package com.fisherman.mooc.lesson3;
@@ -20,42 +20,52 @@ import java.util.stream.Collectors;
  *
  * @author Simon Ritter (@speakjava)
  */
-public class RandomWords {
-  private List<String> sourceWords;
+public class RandomWords
+{
+    private List<String> sourceWords;
 
-  /**
-   * Constructor
-   * 
-   * @throws IOException If the source words file cannot be read
-   */
-  public RandomWords() throws IOException, URISyntaxException
-  {
-    try (BufferedReader reader = Files.newBufferedReader(Paths.get(getClass().getResource("/words.txt").toURI()))) {
-      sourceWords = null;    // YOUR CODE HERE
-      
-      System.out.println("Loaded " + sourceWords.size() + " words");
+    /**
+     * Constructor
+     *
+     * @throws IOException If the source words file cannot be read
+     */
+    public RandomWords() throws IOException, URISyntaxException
+    {
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(getClass().getResource("/words.txt")
+                                                                                 .toURI())))
+        {
+            sourceWords = reader.lines()
+                                .collect(Collectors.toList());    // YOUR CODE HERE
+
+            System.out.println("Loaded " + sourceWords.size() + " words");
+        }
     }
-  }
 
-  /**
-   * Create a list of a given size containing random words
-   *
-   * @param listSize The size of the list to create
-   * @return The created list
-   */
-  public List<String> createList(int listSize) {
-    Random rand = new Random();
-    List<String> wordList = null; // YOUR CODE HERE
+    /**
+     * Create a list of a given size containing random words
+     *
+     * @param listSize The size of the list to create
+     * @return The created list
+     */
+    public List<String> createList(int listSize)
+    {
+        Random rand = new Random();
+        List<String> wordList = rand.ints(0, sourceWords.size())
+                                    .distinct()
+                                    .limit(listSize)
+                                    .mapToObj(value -> sourceWords.get(value))
+                                    .collect(Collectors.toList());
 
-    return wordList;
-  }
+        return wordList;
+    }
 
-  /**
-   * Return the list of all source words, which cannot be modified
-   *
-   * @return The unmodifiable list of all source words
-   */
-  public List<String> allWords() {
-    return Collections.unmodifiableList(sourceWords);
-  }
+    /**
+     * Return the list of all source words, which cannot be modified
+     *
+     * @return The unmodifiable list of all source words
+     */
+    public List<String> allWords()
+    {
+        return Collections.unmodifiableList(sourceWords);
+    }
 }
